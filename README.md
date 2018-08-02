@@ -1,6 +1,6 @@
 # COINTOPAY PAYMENT METHOD FOR OPENCART 3.0.X
 
-## ******************************** HOW TO INSTALL IN OPENCART 3 ********************************
+## *********** HOW TO INSTALL IN OPENCART 3 ***********
 
 1:- Download as zip file
 
