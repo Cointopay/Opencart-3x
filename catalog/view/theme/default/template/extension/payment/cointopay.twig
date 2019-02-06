@@ -1,7 +1,21 @@
-
-  <form action="{{ action }}" method="post" class="form-horizontal">
+<form action="{{ action }}" method="post" class="form-horizontal">
+  <input type="hidden" name="price" value="{{ price }}" />
+  <input type="hidden" name="key" value="{{ key }}" />  
+  <div class="form-group">
+      <label class="col-sm-10 control-label" >{{ text_crypto_coin_lable }}</label>
+      <div class="col-sm-2">
+          <select class="form-control" id="AltCoinID" name="AltCoinID">
+              {% for key,value in crypto_coins %} 
+                  <option value="{{ key }}" {% if (key == AltCoinID) %} {{ 'selected="selected"' }} {% endif %}>{{ value }}</option>
+              {% endfor %} 
+          </select>
+      </div>
+  </div>
+  <input type="hidden" name="OrderID" value="{{ OrderID }}" />
+  <input type="hidden" name="currency" value="{{ currency }}" />
+  <div class="buttons">
     <div class="pull-right">
-      <input type="submit" value=" {{ button_confirm }} " class="btn btn-primary" />
+      <input type="submit" value="{{ button_confirm }}" class="btn btn-primary" />
     </div>
   </div>
 </form>

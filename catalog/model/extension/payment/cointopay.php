@@ -20,9 +20,9 @@ class ModelExtensionPaymentCoinToPay extends Model {
 		//if ($status) {
 			$method_data = array(
 				'code'       => 'cointopay',
-				'title'      => $this->config->get('payment_cointopay_display'),
+				'title'      => $this->config->get('payment_cointopay_display_name'),
 				'terms'      => '',
-				'sort_order' => $this->config->get('cointopay_sort_order')
+				'sort_order' => $this->config->get('payment_cointopay_sort_order')
 			);
 		//}
 

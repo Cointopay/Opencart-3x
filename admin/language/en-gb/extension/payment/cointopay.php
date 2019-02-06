@@ -20,24 +20,6 @@ $_['entry_callback_success_order_status']                        = 'Order Status
 $_['entry_callback_failed_order_status']                        = 'Order Status After Callback Failed From Cointopay';
 $_['entry_merchantID']                                   = 'Merchant ID';
 
-//$_['entry_test']					 = 'Sandbox Mode';
-//$_['entry_transaction']				 = 'Transaction Method';
-//$_['entry_debug']					 = 'Debug Mode';
-//$_['entry_total']                    = 'Total';
-//$_['entry_canceled_reversal_status'] = 'Canceled Reversal Status';
-//$_['entry_completed_status']         = 'Completed Status';
-//$_['entry_denied_status']			 = 'Denied Status';
-//$_['entry_expired_status']			 = 'Expired Status';
-//$_['entry_failed_status']			 = 'Failed Status';
-//$_['entry_pending_status']			 = 'Pending Status';
-//$_['entry_processed_status']		 = 'Processed Status';
-//$_['entry_refunded_status']			 = 'Refunded Status';
-//$_['entry_reversed_status']			 = 'Reversed Status';
-//$_['entry_voided_status']		     = 'Voided Status';
-//$_['entry_geo_zone']				 = 'Geo Zone';
-//$_['entry_status']					 = 'Status';
-//$_['entry_sort_order']				 = 'Sort Order';
-
 // Help
 $_['help_api_key_hint']                                  = 'Get this at cointopay.com under Account.';
 $_['help_crypto_coin_hint']                              = 'Default crypto coin selected at checkout.';
