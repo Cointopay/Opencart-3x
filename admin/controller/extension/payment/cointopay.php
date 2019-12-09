@@ -230,8 +230,8 @@ class ControllerextensionPaymentCoinToPay extends Controller {
 
             $php_arr = json_decode($output);
             $new_php_arr = array();
-            
-            if(count($php_arr)>1)
+
+            if(!empty($php_arr))
             {
                 for($i=0;$i<count($php_arr)-1;$i++)
                 {
