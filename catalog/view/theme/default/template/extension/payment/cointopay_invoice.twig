@@ -46,7 +46,7 @@
                         <tbody>
                             <tr style="height: 50px;">
                                 <td style="width: 200px;">{{ text_expiry }}</td>
-                                <td><span id="expire_time">{{ date("m/d/Y h:i:s T",strtotime(ExpiryTime)) }}</span></td>
+                                <td><span id="expire_time">{{ CalExpiryTime }}</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -61,7 +61,7 @@
                 </div>
                 <div style="width: 50%; float:left;" class="right">
                     <div style="text-align: center;">
-                    <img src="{{ constant('HTTP_SERVER') }}/image/cointopay.gif" style="margin: auto; display: table;margin-bottom: 20px;" />
+                    <img src="{{ constant('HTTP_SERVER') }}image/cointopay.gif" style="margin: auto; display: table;margin-bottom: 20px;" />
                        <img src="{{ QRCodeURL }}" />
                     </div>
                 </div>

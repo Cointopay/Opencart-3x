@@ -41,6 +41,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 $data1['QRCodeURL'] = $php_arr->QRCodeURL;
                 $data1['RedirectURL'] = $php_arr->RedirectURL;
 				$data1['ExpiryTime'] = $php_arr->ExpiryTime;
+				$data1['CalExpiryTime'] = date("m/d/Y h:i:s T",strtotime($php_arr->ExpiryTime));
 				$data1['OrderID'] = $this->session->data['order_id'];
 				$data1['CustomerReferenceNr'] = $php_arr->CustomerReferenceNr;
 				$data1['status'] = $php_arr->Status;
