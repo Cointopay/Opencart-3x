@@ -19,6 +19,7 @@ $_['entry_order_status']                                 = 'Order Status After C
 $_['entry_callback_success_order_status']                        = 'Order Status After Callback success From Cointopay';
 $_['entry_callback_failed_order_status']                        = 'Order Status After Callback Failed From Cointopay';
 $_['entry_merchantID']                                   = 'Merchant ID';
+$_['entry_sort_order']   = 'Sort Order';
 
 // Help
 $_['help_api_key_hint']                                  = 'Get this at cointopay.com under Account.';

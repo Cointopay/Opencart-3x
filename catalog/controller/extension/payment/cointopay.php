@@ -1,5 +1,4 @@
 <?php
-
 class ControllerExtensionPaymentCoinToPay extends Controller 
 {
 	public function index() 
@@ -8,18 +7,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 
 		$this->load->model('checkout/order');
 
-    $order_info = "Session order_id is empty cannot proceed with your request..";
-
-		if (isset($this->session->data['order_id'])) {
-			$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		}
-		else
-		{
-			echo $order_info;
-			return;
-		}
-		try {
-	
+		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
         if (($this->request->server['REQUEST_METHOD'] == 'POST')) 
         {
         
@@ -43,10 +31,10 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             {
                 $this->model_checkout_order->addOrderHistory($php_arr->CustomerReferenceNr, $this->config->get('payment_cointopay_order_status_id'));
 				
-								//print_r($php_arr);
+				//print_r($php_arr);
             
-								$data1['TransactionID'] = $php_arr->TransactionID;
-								$data1['AltCoinID'] = $php_arr->AltCoinID;
+				$data1['TransactionID'] = $php_arr->TransactionID;
+				$data1['AltCoinID'] = $php_arr->AltCoinID;
                 $data1['coinAddress'] = $php_arr->coinAddress;
                 $data1['Amount'] = $php_arr->Amount;
                 $data1['CoinName'] = $php_arr->CoinName;
@@ -57,15 +45,18 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 				$data1['OrderID'] = $this->session->data['order_id'];
 				$data1['CustomerReferenceNr'] = $php_arr->CustomerReferenceNr;
 				$data1['status'] = $php_arr->Status;
+				//$data1['status'] = 'paid';
+				
                 $data1['text_title'] = $this->language->get('text_title');
                 $data1['text_transaction_id'] = $this->language->get('text_transaction_id');
                 $data1['text_address'] = $this->language->get('text_address');
                 $data1['text_amount'] = $this->language->get('text_amount');
                 $data1['text_coinname'] = $this->language->get('text_coinname');
-								$data1['text_checkout_number'] = $this->language->get('text_checkout_number');
+				$data1['text_checkout_number'] = $this->language->get('text_checkout_number');
                 $data1['text_expiry'] = $this->language->get('text_expiry');
                 $data1['text_pay_with_other'] = $this->language->get('text_pay_with_other');
                 $data1['text_clickhere'] = $this->language->get('text_clickhere');
+
             }
             else
             {
@@ -94,13 +85,13 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             }
             $data1['footer'] = $this->load->controller('common/footer');
             $data1['header'] = $this->load->controller('common/header');
-            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/ctp_invoice')) 
+            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_invoice')) 
             {
-                $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/ctp_invoice', $data1));
+                $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_invoice', $data1));
             } 
             else 
             {
-                $this->response->setOutput($this->load->view('extension/payment/ctp_invoice', $data1));
+                $this->response->setOutput($this->load->view('extension/payment/cointopay_invoice', $data1));
             }
 		}
         else
@@ -127,11 +118,6 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 return $this->load->view('extension/payment/cointopay', $data);
             }
         }
-        
-        } catch (Exception $e) {
-    			echo 'Caught exception: ',  $e->getMessage(), "\n";
-    			return;
-			}
 	}
 
 	public function callback() 
@@ -223,7 +209,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         
     function c2pCreateInvoice($data) 
     {
-        $response = $this->c2pCurl('https://app.cointopay.com/REAPI?key='.$data['key'].'&price='.$data['price'].'&AltCoinID='.$data['AltCoinID'].'&OrderID='.$data['OrderID'].'&inputCurrency='.$data['currency'], $data['key']);        
+        $response = $this->c2pCurl('https://cointopay.com/REAPI?key='.$data['key'].'&price='.$data['price'].'&AltCoinID='.$data['AltCoinID'].'&OrderID='.$data['OrderID'].'&inputCurrency='.$data['currency'], $data['key']);        
 		return $response;
     }
     
@@ -272,7 +258,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         
     function getMerchantCoins($merchantId)
     {
-        $url = 'https://app.cointopay.com/CloneMasterTransaction?MerchantID='.$merchantId.'&output=json';
+        $url = 'https://cointopay.com/CloneMasterTransaction?MerchantID='.$merchantId.'&output=json';
         $ch = curl_init($url);
         //print_r($ch);
         /*curl_setopt($ch, CURLOPT_RETURNTRANSFER, 3);
@@ -307,7 +293,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         $this->load->language('extension/payment/cointopay_invoice');
         if(isset($_REQUEST['TransactionID']))
         {
-			 $url = 'https://app.cointopay.com/CloneMasterTransaction?MerchantID='.$this->config->get("payment_cointopay_merchantID").'&TransactionID='.$_REQUEST["TransactionID"].'&output=json';
+			 $url = 'https://cointopay.com/CloneMasterTransaction?MerchantID='.$this->config->get("payment_cointopay_merchantID").'&TransactionID='.$_REQUEST["TransactionID"].'&output=json';
         $ch = curl_init($url);
         //print_r($ch);
         /*curl_setopt($ch, CURLOPT_RETURNTRANSFER, 3);
@@ -354,3 +340,4 @@ class ControllerExtensionPaymentCoinToPay extends Controller
        // echo $response;
     }
 }
+
