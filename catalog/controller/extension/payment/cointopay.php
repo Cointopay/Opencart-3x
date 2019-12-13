@@ -26,6 +26,11 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             $formData = $this->request->post;
 			
             $url = trim($this->c2pCreateInvoice($this->request->post)).'&output=json';
+			$url_components = parse_url($url);
+			parse_str($url_components['query'], $params); 
+			if ($params['MerchantID'] == 'null'){
+				echo "Your API key did not result in a correct transaction order, please update your plugin api key";exit();
+			}
             $ch = curl_init($url);
             //curl_setopt($ch, CURLOPT_RETURNTRANSFER, 3);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -107,7 +112,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         {    
             $this->load->language('extension/payment/cointopay');    
             
-            $data['action'] = $this->url->link('extension/payment/cointopay');
+            $data['action'] = $this->url->link('extension/payment/cointopay', '', true);
 
             $data['price'] = $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false);
             $data['key'] = $this->config->get('payment_cointopay_api_key');
@@ -223,14 +228,13 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         
     function c2pCreateInvoice($data) 
     {
-        $response = $this->c2pCurl('https://app.cointopay.com/REAPI?key='.$data['key'].'&price='.$data['price'].'&AltCoinID='.$data['AltCoinID'].'&OrderID='.$data['OrderID'].'&inputCurrency='.$data['currency'], $data['key']);        
+        $response = $this->c2pCurl('key='.$data['key'].'&price='.$data['price'].'&AltCoinID='.$data['AltCoinID'].'&OrderID='.$data['OrderID'].'&inputCurrency='.$data['currency'].'&output=json', $data['key']);        
 		return $response;
     }
     
-    public function c2pCurl($url, $apiKey, $post = false) 
+    public function c2pCurl($data, $apiKey, $post = false) 
     {
-
-        $curl = curl_init($url);
+        //$curl = curl_init($url);
         $length = 0;
         if ($post)
         {	
@@ -241,32 +245,35 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             $length = strlen($post);
         }
 
-        $uname = base64_encode($apiKey);
-        $header = array(
-                'Content-Type: application/json',
-                "Content-Length: $length",
-                "Authorization: Basic $uname",
-                );
+        $params = array(
+			   "authentication:1",
+			   'cache-control: no-cache',
+			   );
+		
+				$ch = curl_init();
+				curl_setopt_array($ch, array(
+				CURLOPT_URL => 'https://app.cointopay.com/REAPI',
+				//CURLOPT_USERPWD => $this->apikey,
+				CURLOPT_POSTFIELDS => $data,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_HTTPHEADER => $params,
+				CURLOPT_USERAGENT => 1,
+				CURLOPT_HTTPAUTH => CURLAUTH_BASIC
+				)
+				);
+				$output = curl_exec($ch);
+			
+            //curl_close($ch);
+			
+            $php_arr = json_decode($output);
 
-        curl_setopt($curl, CURLOPT_PORT, 443);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 20);
-        curl_setopt($curl, CURLOPT_VERBOSE, true);
-        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, './'.$this->config->get('firstdata_api_key')); // verify certificate
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2); // check existence of CN and verify that it matches hostname
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
-        curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
-
-        $responseString = curl_exec($curl);
-
-        if($responseString == false) {
-                $response = curl_error($curl);
+        if($output == false) {
+                $response = curl_error($ch);
         } else {
-                $response = $responseString;//json_decode($responseString, true);
+                $response = $output;//json_decode($responseString, true);
         }
-        curl_close($curl);
+        curl_close($ch);
         return $response;
     }
         
