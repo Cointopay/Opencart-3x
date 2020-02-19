@@ -14,4 +14,4 @@ $_['text_clickhere'] = 'Click here';
 
 $_['text_success'] = 'Thank you, Your Payment is received!';
 $_['text_expired'] = 'Sorry, Payment time expired!';
-$_['text_failed'] = 'Sorry, Your Payment is failed';
+$_['text_failed'] = 'Sorry, your payment has failed';

@@ -34,7 +34,7 @@ class ControllerextensionPaymentCoinToPay extends Controller {
                 $data['text_enabled']                                    = $this->language->get('text_enabled');
                 $data['text_disabled']                                   = $this->language->get('text_disabled');
 
-                $data['entry_api_key']					 = $this->language->get('entry_api_key');
+                $data['entry_securitycode']					 = $this->language->get('entry_securitycode');
                 $data['entry_crypto_coin']				 = $this->language->get('entry_crypto_coin');
                 $data['entry_redirect_url']				 = $this->language->get('entry_redirect_url');
                 $data['entry_status']					 = $this->language->get('entry_status');
@@ -119,10 +119,10 @@ class ControllerextensionPaymentCoinToPay extends Controller {
 			$data['cointopay_display_name'] = $this->config->get('payment_cointopay_display_name');
 		}
                 
-		if (isset($this->request->post['payment_cointopay_api_key'])) {
-			$data['cointopay_api_key'] = $this->request->post['payment_cointopay_api_key'];
+		if (isset($this->request->post['payment_cointopay_securitycode'])) {
+			$data['cointopay_securitycode'] = $this->request->post['payment_cointopay_securitycode'];
 		} else {
-			$data['cointopay_api_key'] = $this->config->get('payment_cointopay_api_key');
+			$data['cointopay_securitycode'] = $this->config->get('payment_cointopay_securitycode');
 		}
 
                 if (isset($this->request->post['payment_cointopay_status'])) {
@@ -181,7 +181,7 @@ class ControllerextensionPaymentCoinToPay extends Controller {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-		if (!$this->request->post['payment_cointopay_api_key']) {
+		if (!$this->request->post['payment_cointopay_securitycode']) {
 			$this->error['api_key'] = $this->language->get('error_api_key');
 		}
                 

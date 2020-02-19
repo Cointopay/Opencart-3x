@@ -8,7 +8,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 
 		$this->load->model('checkout/order');
 
-    $order_info = "Session order_id is empty cannot proceed with your request";
+        $order_info = "Session order_id is empty cannot proceed with your request";
 
 		if (isset($this->session->data['order_id'])) {
 			$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -25,20 +25,23 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         
             $formData = $this->request->post;
 			
-            $url = trim($this->c2pCreateInvoice($this->request->post)).'&output=json';
-			$url_components = parse_url($url);
+			
+            $url = trim($this->c2pCreateInvoice($this->request->post));
+			$url_components = parse_url(json_encode($url));
 			parse_str($url_components['query'], $params); 
 			if ($params['MerchantID'] == 'null'){
 				echo "Your API key did not result in a correct transaction order, please update your plugin api key";exit();
 			}
-            $ch = curl_init($url);
+            /*$ch = curl_init($url);
             //curl_setopt($ch, CURLOPT_RETURNTRANSFER, 3);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_URL,$url);
             $output = curl_exec($ch);
-            curl_close($ch);
-            $php_arr = json_decode($output);
+			if (curl_errno($ch)) {
+    echo $error_msg = curl_error($ch);die();
+}
+            curl_close($ch);*/
+            $php_arr = json_decode($url);
             
             $data1 = array();    
             
@@ -50,8 +53,8 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 				
 								//print_r($php_arr);
             
-								$data1['TransactionID'] = $php_arr->TransactionID;
-								$data1['AltCoinID'] = $php_arr->AltCoinID;
+				$data1['TransactionID'] = $php_arr->TransactionID;
+				$data1['AltCoinID'] = $php_arr->AltCoinID;
                 $data1['coinAddress'] = $php_arr->coinAddress;
                 $data1['Amount'] = $php_arr->Amount;
                 $data1['CoinName'] = $php_arr->CoinName;
@@ -67,7 +70,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 $data1['text_address'] = $this->language->get('text_address');
                 $data1['text_amount'] = $this->language->get('text_amount');
                 $data1['text_coinname'] = $this->language->get('text_coinname');
-								$data1['text_checkout_number'] = $this->language->get('text_checkout_number');
+				$data1['text_checkout_number'] = $this->language->get('text_checkout_number');
                 $data1['text_expiry'] = $this->language->get('text_expiry');
                 $data1['text_pay_with_other'] = $this->language->get('text_pay_with_other');
                 $data1['text_clickhere'] = $this->language->get('text_clickhere');
@@ -143,8 +146,10 @@ class ControllerExtensionPaymentCoinToPay extends Controller
     {
         $data = array();
         $this->load->language('extension/payment/cointopay_invoice');
+		$this->load->model('checkout/order');
         if(isset($_REQUEST['status']))
         {
+			
           /*  $data = [ 
                         'mid' => $this->config->get('cointopay_account') , 
                         'TransactionID' => $_GET['TransactionID'] ,
@@ -159,12 +164,13 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             }*/
             //if($response->CustomerReferenceNr == $_GET['CustomerReferenceNr'])
            // {
-                $this->load->model('checkout/order');
+                
+				
             
                 if($_REQUEST['status'] == 'paid')
                 {
 					
-                    $this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('cointopay_callback_success_order_status_id','Successfully Paid'));
+                    $this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_success_order_status_id','Successfully Paid'));
 					$data['text_success'] = $this->language->get('text_success');
                 $data['footer'] = $this->load->controller('common/footer');
                 $data['header'] = $this->load->controller('common/header');
@@ -228,7 +234,11 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         
     function c2pCreateInvoice($data) 
     {
-        $response = $this->c2pCurl('key='.$data['key'].'&price='.$data['price'].'&AltCoinID='.$data['AltCoinID'].'&OrderID='.$data['OrderID'].'&inputCurrency='.$data['currency'].'&output=json', $data['key']);        
+		$merchantid = $this->config->get('payment_cointopay_merchantID');
+		$payment_cointopay_securitycode = $this->config->get('payment_cointopay_securitycode');
+        $response = $this->c2pCurl('SecurityCode='.$payment_cointopay_securitycode.'&MerchantID=' . $merchantid . '&Amount='.$data['price'].'&AltCoinID='.$data['AltCoinID'].'&inputCurrency=' . $data['currency'] . '&output=json&CustomerReferenceNr=' . $data['OrderID'] . '&returnurl=' . $this->url->link('extension/payment/cointopay/callback') .'&transactionconfirmurl='.$this->url->link('extension/payment/cointopay/callback').'&transactionfailurl='.$this->url->link('extension/payment/cointopay/callback'), $data['key']);        
+
+       // $response = $this->c2pCurl('key='.$data['key'].'&price='.$data['price'].'&AltCoinID='.$data['AltCoinID'].'&OrderID='.$data['OrderID'].'&inputCurrency='.$data['currency'].'&transactionconfirmurl='.$this->url->link('extension/payment/cointopay/callback').'&output=json&transactionfailurl='.$this->url->link('extension/payment/cointopay/callback'), $data['key']);        
 		return $response;
     }
     
@@ -244,6 +254,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             curl_setopt($curl, CURLOPT_POSTFIELDS, $formData);
             $length = strlen($post);
         }
+		
 
         $params = array(
 			   "authentication:1",
@@ -252,7 +263,8 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 		
 				$ch = curl_init();
 				curl_setopt_array($ch, array(
-				CURLOPT_URL => 'https://app.cointopay.com/REAPI',
+				//CURLOPT_URL => 'https://app.cointopay.com/REAPI',
+				CURLOPT_URL => 'https://app.cointopay.com/MerchantAPI?Checkout=true',
 				//CURLOPT_USERPWD => $this->apikey,
 				CURLOPT_POSTFIELDS => $data,
 				CURLOPT_RETURNTRANSFER => true,
@@ -269,9 +281,9 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             $php_arr = json_decode($output);
 
         if($output == false) {
-                $response = curl_error($ch);
+               $response = curl_error($ch);
         } else {
-                $response = $output;//json_decode($responseString, true);
+              $response = $output;//json_decode($responseString, true);
         }
         curl_close($ch);
         return $response;

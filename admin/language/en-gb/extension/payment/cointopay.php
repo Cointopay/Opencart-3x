@@ -10,7 +10,7 @@ $_['text_disabled']                                      = 'Disabled';
 
 
 // Entry
-$_['entry_api_key']					 = 'API key';
+$_['entry_securitycode']					 = 'SecurityCode';
 $_['entry_crypto_coin']					 = 'Default Crypto Coin';
 $_['entry_redirect_url']				 = 'Redirect URL';
 $_['entry_status']					 = 'Status';
@@ -32,7 +32,7 @@ $_['help_merchantID_hint']                             = 'Enter your ID from coi
 
 // Error
 $_['error_permission']				 = 'Warning: You do not have permission to modify payment Cointopay!';
-$_['error_api_key']				 = 'Please enter valid Api Key!';
+$_['error_api_key']				 = 'Please enter valid Security Code!';
 $_['error_display_name']				 = 'Please enter Display Name!';
 $_['error_merchantID']				 = 'Please enter Valid MerchantID!';
 $_['error_crypto_coin']				 = 'Please enter correct MerchantID then Select Default Crypto Coin!';
