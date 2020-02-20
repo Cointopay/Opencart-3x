@@ -150,28 +150,28 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         if(isset($_REQUEST['status']))
         {
 			
-          /*  $data = [ 
-                        'mid' => $this->config->get('cointopay_account') , 
+            $data = [ 
+                        'mid' => $this->config->get('payment_cointopay_merchantID') , 
                         'TransactionID' => $_GET['TransactionID'] ,
                         'ConfirmCode' => $_GET['ConfirmCode']
                     ];
-            $response = $this->validateOrder($data);*/
+            $response = $this->validateOrder($data);
      
-            /*if($response->Status !== $_GET['status'])
+            if($response->Status !== $_GET['status'])
             {
                 echo "We have detected different order status. Your order has been halted.";
                 exit;
-            }*/
-            //if($response->CustomerReferenceNr == $_GET['CustomerReferenceNr'])
-           // {
+            }
+            if($response->CustomerReferenceNr == $_GET['CustomerReferenceNr'])
+            {
                 
 				
             
                 if($_REQUEST['status'] == 'paid')
                 {
 					
-                    $this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_success_order_status_id','Successfully Paid'));
-					$data['text_success'] = $this->language->get('text_success');
+                $this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_success_order_status_id','Successfully Paid'));
+				$data['text_success'] = $this->language->get('text_success');
                 $data['footer'] = $this->load->controller('common/footer');
                 $data['header'] = $this->load->controller('common/header');
                 
@@ -224,12 +224,12 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 }
 				}
             }
-            /*else
+            else
             {
                 echo "We have detected changes in order status. Your order has been halted.";
                 exit;
-         }*/
-       // }
+         }
+        }
 	}
         
     function c2pCreateInvoice($data) 
@@ -328,10 +328,6 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         {
 			 $url = 'https://app.cointopay.com/CloneMasterTransaction?MerchantID='.$this->config->get("payment_cointopay_merchantID").'&TransactionID='.$_REQUEST["TransactionID"].'&output=json';
         $ch = curl_init($url);
-        //print_r($ch);
-        /*curl_setopt($ch, CURLOPT_RETURNTRANSFER, 3);
-        $output = curl_exec($ch);
-        curl_close($ch);*/
 
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
