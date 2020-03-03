@@ -272,9 +272,6 @@ class ControllerextensionPaymentCoinToPay extends Controller {
 				if (array_key_exists('ShortName', $c)) {
 				$new_php_arr['currency'][] = $c->ShortName;
 				}
-				if (array_key_exists('isInputCurrency', $c)) {
-				$new_php_arr['isInputCurrency'][] = $c->isInputCurrency;
-				}
 				
 			}
 		}

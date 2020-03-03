@@ -375,5 +375,33 @@ class ControllerExtensionPaymentCoinToPay extends Controller
        // }
        // echo $response;
     }
+	function getInputCurrencyList()
+	{
+		$merchantId = $this->config->get('payment_cointopay_merchantID');
+	    $url = 'https://cointopay.com/v2REAPI?MerchantID='.$merchantId.'&Call=inputCurrencyList&output=json&APIKey=_';
+	    $ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_URL,$url);
+		$output=curl_exec($ch);
+		
+		curl_close($ch);
+
+		$php_arr = json_decode($output);
+		$new_php_arr = array();
+
+		if(!empty($php_arr))
+		{
+			foreach($php_arr as $c)
+			{
+				if (array_key_exists('ShortName', $c)) {
+				$new_php_arr['currency'][] = $c->ShortName;
+				}
+				
+			}
+		}
+		
+		return $new_php_arr;
+	}
 }
 
