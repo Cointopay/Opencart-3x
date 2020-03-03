@@ -36,6 +36,7 @@ $_['error_api_key']				 = 'Please enter valid Security Code!';
 $_['error_display_name']				 = 'Please enter Display Name!';
 $_['error_merchantID']				 = 'Please enter Valid MerchantID!';
 $_['error_crypto_coin']				 = 'Please enter correct MerchantID then Select Default Crypto Coin!';
+$_['error_invalid_currency']				 = 'Your Store currency not supported. Please let us know.';
 
 // Tab
 $_['tab_general']					 = 'General';

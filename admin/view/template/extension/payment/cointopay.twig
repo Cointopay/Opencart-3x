@@ -14,6 +14,9 @@
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         {% endif %}
+		{% if error_invalid_currency %}
+			<div class="text-danger">{{ error_invalid_currency }}</div>
+		{% endif %}
         <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-cointopay" class="form-horizontal">
             <script type="text/javascript">
                 {% if cointopay_merchantID is not empty  and  cointopay_crypto_coin is empty %}

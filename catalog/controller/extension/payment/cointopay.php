@@ -24,13 +24,20 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         {
         
             $formData = $this->request->post;
-			
+			$currencyOutput = $this->getInputCurrencyList();
+			if (null !== $this->config->get('payment_cointopay_merchantID')) {
+				if (!in_array($this->config->get('config_currency'), $currencyOutput['currency'])) {
+				echo 'Your Store currency '.$this->config->get('config_currency').' not supported. Please contact <a href="mailto:support@cointopay.com">support@cointopay.com</a> to resolve this issue.';exit();
+				}
+			}
 			
             $url = trim($this->c2pCreateInvoice($this->request->post));
 			$url_components = parse_url(json_encode($url));
-			parse_str($url_components['query'], $params); 
-			if ($params['MerchantID'] == 'null'){
-				echo "Your API key did not result in a correct transaction order, please update your plugin api key";exit();
+			if(isset($url_components['query'])){
+				parse_str($url_components['query'], $params); 
+				if ($params['MerchantID'] == 'null'){
+					echo "Your API key did not result in a correct transaction order, please update your plugin api key";exit();
+				}
 			}
             /*$ch = curl_init($url);
             //curl_setopt($ch, CURLOPT_RETURNTRANSFER, 3);
