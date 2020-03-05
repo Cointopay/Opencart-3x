@@ -32,6 +32,9 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 			}
 			
             $url = trim($this->c2pCreateInvoice($this->request->post));
+			if (is_string(json_decode($url))){
+				echo json_decode($url);exit();
+			}
 			$url_components = parse_url(json_encode($url));
 			if(isset($url_components['query'])){
 				parse_str($url_components['query'], $params); 
@@ -49,6 +52,10 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 }
             curl_close($ch);*/
             $php_arr = json_decode($url);
+			
+			if(!isset($php_arr->TransactionID) || !isset($php_arr->QRCodeURL)){
+				echo "Transaction not completed, please check your cointopay settings.";exit();
+			}
             
             $data1 = array();    
             
