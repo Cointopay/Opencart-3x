@@ -1,5 +1,7 @@
 # COINTOPAY PAYMENT METHOD FOR OPENCART 3.0.X
 
+SOURCE CODE FOR COINTOPAY OPENCART PLUGIN LOCATED HERE: https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=37980&filter_download_id=36&sort=date_added
+
 ## *********** HOW TO INSTALL IN OPENCART 3 ***********
 
 1:- Download as zip file
