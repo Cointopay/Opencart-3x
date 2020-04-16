@@ -22,7 +22,9 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 	
         if (($this->request->server['REQUEST_METHOD'] == 'POST')) 
         {
-        
+            if (empty($this->config->get('payment_cointopay_merchantID')) || empty($this->config->get('payment_cointopay_securitycode'))){
+				echo 'CredentialsMissing';exit();
+		    }
             $formData = $this->request->post;
 			$currencyOutput = $this->getInputCurrencyList();
 			if (null !== $this->config->get('payment_cointopay_merchantID')) {
@@ -39,18 +41,9 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 			if(isset($url_components['query'])){
 				parse_str($url_components['query'], $params); 
 				if ($params['MerchantID'] == 'null'){
-					echo "Your API key did not result in a correct transaction order, please update your plugin api key";exit();
+					echo "Your MerchantID did not result in a correct transaction order, please update your plugin MerchantID";exit();
 				}
 			}
-            /*$ch = curl_init($url);
-            //curl_setopt($ch, CURLOPT_RETURNTRANSFER, 3);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $output = curl_exec($ch);
-			if (curl_errno($ch)) {
-    echo $error_msg = curl_error($ch);die();
-}
-            curl_close($ch);*/
             $php_arr = json_decode($url);
 			
 			if(!isset($php_arr->TransactionID) || !isset($php_arr->QRCodeURL)){
@@ -169,19 +162,51 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                         'TransactionID' => $_GET['TransactionID'] ,
                         'ConfirmCode' => $_GET['ConfirmCode']
                     ];
-            $response = $this->validateOrder($data);
+            $transactionData = $this->validateOrder($data);
      
-            if($response->Status !== $_GET['status'])
-            {
-                echo "We have detected different order status. Your order has been halted.";
-                exit;
-            }
-            if($response->CustomerReferenceNr == $_GET['CustomerReferenceNr'])
-            {
-                
+            if(200 !== $transactionData['status_code']){
+				echo $transactionData['message'];exit;
+			}
+			else{
+				if($transactionData['data']['Security'] != $_GET['ConfirmCode']){
+					echo "Data mismatch! ConfirmCode doesn\'t match";
+					exit;
+				}
+				elseif($transactionData['data']['CustomerReferenceNr'] != $_GET['CustomerReferenceNr']){
+					echo "Data mismatch! CustomerReferenceNr doesn\'t match";
+					exit;
+				}
+				elseif($transactionData['data']['TransactionID'] != $_GET['TransactionID']){
+					echo "Data mismatch! TransactionID doesn\'t match";
+					exit;
+				}
+				elseif($transactionData['data']['AltCoinID'] != $_GET['AltCoinID']){
+					echo "Data mismatch! AltCoinID doesn\'t match";
+					exit;
+				}
+				elseif($transactionData['data']['MerchantID'] != $_GET['MerchantID']){
+					echo "Data mismatch! MerchantID doesn\'t match";
+					exit;
+				}
+				elseif($transactionData['data']['coinAddress'] != $_GET['CoinAddressUsed']){
+					echo "Data mismatch! coinAddress doesn\'t match";
+					exit;
+				}
+				elseif($transactionData['data']['SecurityCode'] != $_GET['SecurityCode']){
+					echo "Data mismatch! SecurityCode doesn\'t match";
+					exit;
+				}
+				elseif($transactionData['data']['inputCurrency'] != $_GET['inputCurrency']){
+					echo "Data mismatch! inputCurrency doesn\'t match";
+					exit;
+				}
+				elseif($transactionData['data']['Status'] != $_GET['status']){
+					echo "Data mismatch! status doesn\'t match. Your order status is ".$transactionData['data']['Status'];
+					exit;
+				}
 				
-            
-                if($_REQUEST['status'] == 'paid')
+			else{
+            if($_REQUEST['status'] == 'paid')
                 {
 					
                 $this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_success_order_status_id','Successfully Paid'));
@@ -237,12 +262,9 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                     $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
                 }
 				}
-            }
-            else
-            {
-                echo "We have detected changes in order status. Your order has been halted.";
-                exit;
-         }
+			}
+		 }
+            
         }
 	}
         
@@ -356,8 +378,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 
     function  validateOrder($data)
     {
-       //$this->pp($data);
-       //https://cointopay.com/v2REAPI?MerchantID=14351&Call=QA&APIKey=_&output=json&TransactionID=230196&ConfirmCode=YGBMWCNW0QSJVSPQBCHWEMV7BGBOUIDQCXGUAXK6PUA
+
        $params = array(
        "authentication:1",
        'cache-control: no-cache',
@@ -365,8 +386,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         $ch = curl_init();
         curl_setopt_array($ch, array(
         CURLOPT_URL => 'https://app.cointopay.com/v2REAPI?',
-        //CURLOPT_USERPWD => $this->apikey,
-        CURLOPT_POSTFIELDS => 'MerchantID='.$data['mid'].'&Call=QA&APIKey=_&output=json&TransactionID='.$data['TransactionID'].'&ConfirmCode='.$data['ConfirmCode'],
+        CURLOPT_POSTFIELDS => 'MerchantID='.$data['mid'].'&Call=Transactiondetail&APIKey=a&output=json&ConfirmCode='.$data['ConfirmCode'],
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_HTTPHEADER => $params,
@@ -375,12 +395,8 @@ class ControllerExtensionPaymentCoinToPay extends Controller
         )
         );
         $response = curl_exec($ch);
-        $results = json_decode($response);
-       // if($results->CustomerReferenceNr)
-       // {
-            return $results;
-       // }
-       // echo $response;
+        $results = json_decode($response, true);
+		return $results;
     }
 	function getInputCurrencyList()
 	{

@@ -1,5 +1,7 @@
 # COINTOPAY PAYMENT METHOD FOR OPENCART 3.0.X
 
+Please follow the Opencart 3.0.x Cointopay Plugin install instructions mentioned here: https://docs.google.com/document/d/1NB8xxm8yXLt2j1oMJSjmA4sAk4cJBayGOksMRC2xPKg/edit?usp=sharing
+
 ## ******************************** HOW TO INSTALL IN OPENCART 3 ********************************
 
 1:- Download as zip file
