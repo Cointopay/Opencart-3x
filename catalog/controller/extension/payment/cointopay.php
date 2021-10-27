@@ -15,8 +15,20 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 		}
 		else
 		{
-			echo $order_info;
-			return;
+			$data = array();
+			$this->load->language('extension/payment/cointopay_invoice');
+			$this->load->model('checkout/order');
+			$data['text_failed'] = $order_info;
+			$data['footer'] = $this->load->controller('common/footer');
+			$data['header'] = $this->load->controller('common/header');
+			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+			{
+				return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+			} 
+			else 
+			{
+				return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+			}
 		}
 		try {
 	
@@ -41,13 +53,39 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 			if(isset($url_components['query'])){
 				parse_str($url_components['query'], $params); 
 				if ($params['MerchantID'] == 'null'){
-					echo "Your MerchantID did not result in a correct transaction order, please update your plugin MerchantID";exit();
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Your MerchantID did not result in a correct transaction order, please update your plugin MerchantID";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
 			}
             $php_arr = json_decode($url);
 			
 			if(!isset($php_arr->TransactionID) || !isset($php_arr->QRCodeURL)){
-				echo "Transaction not completed, please check your cointopay settings.";exit();
+				$data = array();
+				$this->load->language('extension/payment/cointopay_invoice');
+				$this->load->model('checkout/order');
+				$data['text_failed'] = "Transaction not completed, please check your cointopay settings.";
+				$data['footer'] = $this->load->controller('common/footer');
+				$data['header'] = $this->load->controller('common/header');
+				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+				{
+					return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+				} 
+				else 
+				{
+					return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+				}
 			}
             
             $data1 = array();    
@@ -57,9 +95,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             if($php_arr->error == '' || empty($php_arr->error))
             {
                 $this->model_checkout_order->addOrderHistory($php_arr->CustomerReferenceNr, $this->config->get('payment_cointopay_order_status_id'));
-				
-								//print_r($php_arr);
-            
+				//print_r($php_arr);
 				$data1['TransactionID'] = $php_arr->TransactionID;
 				$data1['AltCoinID'] = $php_arr->AltCoinID;
                 $data1['coinAddress'] = $php_arr->coinAddress;
@@ -68,6 +104,10 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 $data1['QRCodeURL'] = $php_arr->QRCodeURL;
                 $data1['RedirectURL'] = $php_arr->RedirectURL;
 				$data1['ExpiryTime'] = $php_arr->ExpiryTime;
+				$data1['MerchantID'] = $php_arr->MerchantID;
+				$data1['SecurityCode'] = $php_arr->SecurityCode;
+				$data1['ConfirmCode'] = $php_arr->Security;
+				$data1['inputCurrency'] = $php_arr->inputCurrency;
 				$data1['CalExpiryTime'] = date("m/d/Y h:i:s T",strtotime($php_arr->ExpiryTime));
 				$data1['OrderID'] = $this->session->data['order_id'];
 				$data1['CustomerReferenceNr'] = $php_arr->CustomerReferenceNr;
@@ -159,8 +199,8 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 			
             $data = [ 
                         'mid' => $this->config->get('payment_cointopay_merchantID') , 
-                        'TransactionID' => $_GET['TransactionID'] ,
-                        'ConfirmCode' => $_GET['ConfirmCode']
+                        'TransactionID' => $_REQUEST['TransactionID'] ,
+                        'ConfirmCode' => $_REQUEST['ConfirmCode']
                     ];
             $transactionData = $this->validateOrder($data);
      
@@ -168,101 +208,288 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 				echo $transactionData['message'];exit;
 			}
 			else{
-				if($transactionData['data']['Security'] != $_GET['ConfirmCode']){
-					echo "Data mismatch! ConfirmCode doesn\'t match";
-					exit;
+				if($transactionData['data']['Security'] != $_REQUEST['ConfirmCode']){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! ConfirmCode doesn\'t match";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				elseif($transactionData['data']['CustomerReferenceNr'] != $_GET['CustomerReferenceNr']){
-					echo "Data mismatch! CustomerReferenceNr doesn\'t match";
-					exit;
+				elseif($transactionData['data']['CustomerReferenceNr'] != $_REQUEST['CustomerReferenceNr']){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! CustomerReferenceNr doesn\'t match";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				elseif($transactionData['data']['TransactionID'] != $_GET['TransactionID']){
-					echo "Data mismatch! TransactionID doesn\'t match";
-					exit;
+				elseif($transactionData['data']['TransactionID'] != $_REQUEST['TransactionID']){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! TransactionID doesn\'t match";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				elseif($transactionData['data']['AltCoinID'] != $_GET['AltCoinID']){
-					echo "Data mismatch! AltCoinID doesn\'t match";
-					exit;
+				elseif($transactionData['data']['AltCoinID'] != $_REQUEST['AltCoinID']){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! AltCoinID doesn\'t match";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				elseif($transactionData['data']['MerchantID'] != $_GET['MerchantID']){
-					echo "Data mismatch! MerchantID doesn\'t match";
-					exit;
+				elseif($transactionData['data']['MerchantID'] != $_REQUEST['MerchantID']){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! MerchantID doesn\'t match";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				elseif($transactionData['data']['coinAddress'] != $_GET['CoinAddressUsed']){
-					echo "Data mismatch! coinAddress doesn\'t match";
-					exit;
+				elseif($transactionData['data']['coinAddress'] != $_REQUEST['CoinAddressUsed']){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! coinAddress doesn\'t match";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				elseif($transactionData['data']['SecurityCode'] != $_GET['SecurityCode']){
-					echo "Data mismatch! SecurityCode doesn\'t match";
-					exit;
+				elseif($transactionData['data']['SecurityCode'] != $_REQUEST['SecurityCode']){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! SecurityCode doesn\'t match";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				elseif($transactionData['data']['inputCurrency'] != $_GET['inputCurrency']){
-					echo "Data mismatch! inputCurrency doesn\'t match";
-					exit;
+				elseif($transactionData['data']['inputCurrency'] != $_REQUEST['inputCurrency']){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! inputCurrency doesn\'t match";
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				elseif($transactionData['data']['Status'] != $_GET['status']){
-					echo "Data mismatch! status doesn\'t match. Your order status is ".$transactionData['data']['Status'];
-					exit;
+				elseif($transactionData['data']['Status'] != $_REQUEST['status'] && $_REQUEST['notenough'] == 0){
+					$data = array();
+					$this->load->language('extension/payment/cointopay_invoice');
+					$this->load->model('checkout/order');
+					$data['text_failed'] = "Data mismatch! status doesn\'t match. Your order status is ".$transactionData['data']['Status'];
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . 'template/extension/payment/cointopay_failed')) 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						return  $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
 				}
-				
-			else{
-            if($_REQUEST['status'] == 'paid')
-                {
+				else{
+					if($_REQUEST['status'] == 'paid' && $_REQUEST['notenough'] == 0)
+					{
+						
+					$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_success_order_status_id','Successfully Paid'));
+					$data['text_success'] = $this->language->get('text_success');
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
 					
-                $this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_success_order_status_id','Successfully Paid'));
-				$data['text_success'] = $this->language->get('text_success');
-                $data['footer'] = $this->load->controller('common/footer');
-                $data['header'] = $this->load->controller('common/header');
-                
-                if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_success')) 
-                {
-                    $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_success', $data));
-                } 
-                else 
-                {
-                    $this->response->setOutput($this->load->view('extension/payment/cointopay_success', $data));
-                }
-                } 
-                /*elseif($_GET['status'] == 'paid' AND  $_GET['notenough'] == '1')
-                {
-                    $statusProcessed = 15;
-                  */  //$this->model_checkout_order->addOrderHistory($_GET['CustomerReferenceNr'], $statusProcessed,'Low Balanace');
-               // }  
-                elseif ($_REQUEST['status'] == 'failed') 
-                {
-                    $this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_failed_order_status_id','Transaction payment failed'));
-                
-                $data['text_failed'] = $this->language->get('text_failed');
-                $data['footer'] = $this->load->controller('common/footer');
-                $data['header'] = $this->load->controller('common/header');
-                
-                if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
-                {
-                    $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
-                } 
-                else 
-                {
-                    $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
-                }
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_success')) 
+					{
+						$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_success', $data));
+					} 
+					else 
+					{
+						$this->response->setOutput($this->load->view('extension/payment/cointopay_success', $data));
+					}
+					} 
+					elseif($_REQUEST['status'] == 'paid' AND  $_REQUEST['notenough'] == '1')
+					{
+						$statusProcessed = 15;
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $statusProcessed,'Low Balanace');
+						$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'];
+						$data['footer'] = $this->load->controller('common/footer');
+						$data['header'] = $this->load->controller('common/header');
+						
+						if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
+						{
+							$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
+						} 
+						else 
+						{
+							$this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+						}
+					}  
+					elseif ($_REQUEST['status'] == 'failed') 
+					{
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_failed_order_status_id','Transaction payment failed'));
+					
+					$data['text_failed'] = $this->language->get('text_failed');
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
+					{
+						$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						$this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
+					}
+					elseif ($_REQUEST['status'] == 'expired') 
+					{
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_failed_order_status_id','Transaction payment failed'));
+					
+					$data['text_failed'] = $this->language->get('text_expired');
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
+					{
+						$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						$this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
+					}
+					elseif ($_REQUEST['status'] == 'underpaid') 
+					{
+					$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 15, 'Transaction payment underpaid');
+					
+					$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'];
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
+					{
+						$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						$this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
+					}
+					elseif ($_REQUEST['status'] == 'cancelled') 
+					{
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 7, 'Transaction payment cancelled');
+					
+					$data['text_failed'] = $this->language->get('text_cancel');
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
+					{
+						$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						$this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
+					}
+					elseif ($_REQUEST['status'] == 'waiting') 
+					{
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 15, 'Transaction payment waiting');
+					
+					$data['text_failed'] = $this->language->get('text_waiting');
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
+					{
+						$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						$this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
+					}
+					else
+					{
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 7, 'Transaction payment cancelled');
+					
+					$data['text_failed'] = $this->language->get('text_cancel');
+					$data['footer'] = $this->load->controller('common/footer');
+					$data['header'] = $this->load->controller('common/header');
+					
+					if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
+					{
+						$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
+					} 
+					else 
+					{
+						$this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
+					}
+					}
 				}
-				elseif ($_REQUEST['status'] == 'expired') 
-                {
-                    $this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_failed_order_status_id','Transaction payment failed'));
-                
-                $data['text_failed'] = $this->language->get('text_expired');
-                $data['footer'] = $this->load->controller('common/footer');
-                $data['header'] = $this->load->controller('common/header');
-                
-                if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_failed')) 
-                {
-                    $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_failed', $data));
-                } 
-                else 
-                {
-                    $this->response->setOutput($this->load->view('extension/payment/cointopay_failed', $data));
-                }
-				}
-			}
 		 }
             
         }
@@ -417,7 +644,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 		{
 			foreach($php_arr as $c)
 			{
-				if (array_key_exists('ShortName', $c)) {
+				if (property_exists($c, 'ShortName')) {
 				$new_php_arr['currency'][] = $c->ShortName;
 				}
 				
