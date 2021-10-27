@@ -1,5 +1,5 @@
 <?php
-class ControllerextensionPaymentCoinToPay extends Controller {
+class ControllerExtensionPaymentCoinToPay extends Controller {
 	private $error = array();
 
 	public function index() {
@@ -163,6 +163,13 @@ class ControllerextensionPaymentCoinToPay extends Controller {
             $data['crypto_coins'] = $this->getMerchantCoins($this->config->get('payment_cointopay_merchantID'));
                         
 		}
+		
+		if (isset($this->request->post['payment_cointopay_sort_order'])) {
+			$data['cointopay_sort_order'] = $this->request->post['payment_cointopay_sort_order'];
+		} else {
+			$data['cointopay_sort_order'] = $this->config->get('payment_cointopay_sort_order');
+                        
+		}
                 
                 
         $this->load->model('localisation/order_status');
@@ -269,7 +276,7 @@ class ControllerextensionPaymentCoinToPay extends Controller {
 		{
 			foreach($php_arr as $c)
 			{
-				if (array_key_exists('ShortName', $c)) {
+				if (property_exists($c, 'ShortName')) {
 				$new_php_arr['currency'][] = $c->ShortName;
 				}
 				
