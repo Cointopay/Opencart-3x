@@ -12,9 +12,10 @@ $_['text_coinname'] = 'Cointype ';
 $_['text_pay_with_other'] = 'For more payment details';
 $_['text_clickhere'] = 'Click here';
 
-$_['text_success'] = 'Thank you, Your Payment is received!';
-$_['text_expired'] = 'Sorry, Payment time expired!';
+$_['text_success'] = 'Thank you, your payment is received!';
+$_['text_expired'] = 'Sorry, payment time expired!';
 $_['text_failed'] = 'Sorry, your payment has failed';
 $_['text_cancel'] = 'Sorry, your payment has cancelled';
 $_['text_waiting'] = 'Sorry, your payment is in waiting';
-$_['text_notenough'] = 'Please pay remaining amount for Order #';
+$_['text_notenough'] = 'Payment not enough for order #';
+$_['text_invoice_link'] = '. Please contact support https://cointopay.com/invoice/';

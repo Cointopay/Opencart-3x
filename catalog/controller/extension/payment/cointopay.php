@@ -8,7 +8,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 
 		$this->load->model('checkout/order');
 
-        $order_info = "Session order_id is empty cannot proceed with your request";
+        $order_info = "Session empty, please redo your order to proceed.";
 
 		if (isset($this->session->data['order_id'])) {
 			$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -374,7 +374,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					{
 						$statusProcessed = 15;
 						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $statusProcessed,'Low Balanace');
-						$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'];
+						$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'].$this->language->get('text_invoice_link').$_REQUEST['ConfirmCode'];
 						$data['footer'] = $this->load->controller('common/footer');
 						$data['header'] = $this->load->controller('common/header');
 						
@@ -425,7 +425,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					{
 					$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 15, 'Transaction payment underpaid');
 					
-					$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'];
+					$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'].$this->language->get('text_invoice_link').$_REQUEST['ConfirmCode'];
 					$data['footer'] = $this->load->controller('common/footer');
 					$data['header'] = $this->load->controller('common/header');
 					
