@@ -374,7 +374,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					{
 						$statusProcessed = 15;
 						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $statusProcessed,'Low Balanace');
-						$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'].$this->language->get('text_invoice_link').$_REQUEST['ConfirmCode'];
+						$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'].$this->language->get('text_invoice_link').'<a href="https://cointopay.com/invoice/'.$_REQUEST['ConfirmCode'].'" target="_blank">invoice link</a>';
 						$data['footer'] = $this->load->controller('common/footer');
 						$data['header'] = $this->load->controller('common/header');
 						
@@ -425,7 +425,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					{
 					$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 15, 'Transaction payment underpaid');
 					
-					$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'].$this->language->get('text_invoice_link').$_REQUEST['ConfirmCode'];
+					$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'].'<a href="https://cointopay.com/invoice/'.$_REQUEST['ConfirmCode'].'" target="_blank">invoice link</a>';
 					$data['footer'] = $this->load->controller('common/footer');
 					$data['header'] = $this->load->controller('common/header');
 					
@@ -654,4 +654,3 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 		return $new_php_arr;
 	}
 }
-

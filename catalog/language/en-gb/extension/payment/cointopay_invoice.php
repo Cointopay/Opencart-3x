@@ -18,4 +18,4 @@ $_['text_failed'] = 'Sorry, your payment has failed';
 $_['text_cancel'] = 'Sorry, your payment has cancelled';
 $_['text_waiting'] = 'Sorry, your payment is in waiting';
 $_['text_notenough'] = 'Payment not enough for order #';
-$_['text_invoice_link'] = '. Please contact support https://cointopay.com/invoice/';
+$_['text_invoice_link'] = '. Please contact support ';
