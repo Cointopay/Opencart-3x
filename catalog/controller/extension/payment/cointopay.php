@@ -94,7 +94,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             
             if($php_arr->error == '' || empty($php_arr->error))
             {
-                $this->model_checkout_order->addOrderHistory($php_arr->CustomerReferenceNr, 2);
+                $this->model_checkout_order->addOrderHistory($php_arr->CustomerReferenceNr, 2,'Transaction #'.$php_arr->TransactionID.' Created on cointopay for OrderID #'.$php_arr->CustomerReferenceNr.' with status Processing', false);
 				//print_r($php_arr);
 				$data1['TransactionID'] = $php_arr->TransactionID;
 				$data1['AltCoinID'] = $php_arr->AltCoinID;
