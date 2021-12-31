@@ -356,7 +356,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					if($_REQUEST['status'] == 'paid' && $_REQUEST['notenough'] == 0)
 					{
 						
-					$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_success_order_status_id','Successfully Paid'));
+					$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_success_order_status_id','Successfully Paid'),'Cointopay Transaction #'.$_REQUEST['TransactionID'].' Set to completed for OrderID #'.$_REQUEST['CustomerReferenceNr'], false);
 					$data['text_success'] = $this->language->get('text_success');
 					$data['footer'] = $this->load->controller('common/footer');
 					$data['header'] = $this->load->controller('common/header');
@@ -370,10 +370,10 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 						$this->response->setOutput($this->load->view('extension/payment/cointopay_success', $data));
 					}
 					} 
-					elseif($_REQUEST['status'] == 'paid' AND  $_REQUEST['notenough'] == '1')
+					elseif($_REQUEST['status'] == 'paid' &&  $_REQUEST['notenough'] == '1')
 					{
 						$statusProcessed = 15;
-						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $statusProcessed,'Low Balanace');
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 1,'Cointopay Transaction #'.$_REQUEST['TransactionID'].' Set to pending for OrderID #'.$_REQUEST['CustomerReferenceNr'], false);
 						$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'].$this->language->get('text_invoice_link').'<a href="https://cointopay.com/invoice/'.$_REQUEST['ConfirmCode'].'" target="_blank">invoice link</a>';
 						$data['footer'] = $this->load->controller('common/footer');
 						$data['header'] = $this->load->controller('common/header');
@@ -389,7 +389,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					}  
 					elseif ($_REQUEST['status'] == 'failed') 
 					{
-						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_failed_order_status_id','Transaction payment failed'));
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_failed_order_status_id','Transaction payment failed'),'Cointopay Transaction #'.$_REQUEST['TransactionID'].' Set to failed for OrderID #'.$_REQUEST['CustomerReferenceNr'], false);
 					
 					$data['text_failed'] = $this->language->get('text_failed');
 					$data['footer'] = $this->load->controller('common/footer');
@@ -406,7 +406,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					}
 					elseif ($_REQUEST['status'] == 'expired') 
 					{
-						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], $this->config->get('payment_cointopay_callback_failed_order_status_id','Transaction payment failed'));
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 14,'Cointopay Transaction #'.$_REQUEST['TransactionID'].' Set to expired for OrderID #'.$_REQUEST['CustomerReferenceNr'], false);
 					
 					$data['text_failed'] = $this->language->get('text_expired');
 					$data['footer'] = $this->load->controller('common/footer');
@@ -423,7 +423,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					}
 					elseif ($_REQUEST['status'] == 'underpaid') 
 					{
-					$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 15, 'Transaction payment underpaid');
+					$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 1, 'Cointopay Transaction #'.$_REQUEST['TransactionID'].' Set to pending for OrderID #'.$_REQUEST['CustomerReferenceNr'], false);
 					
 					$data['text_failed'] = $this->language->get('text_notenough').$_REQUEST['CustomerReferenceNr'].'<a href="https://cointopay.com/invoice/'.$_REQUEST['ConfirmCode'].'" target="_blank">invoice link</a>';
 					$data['footer'] = $this->load->controller('common/footer');
@@ -440,7 +440,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					}
 					elseif ($_REQUEST['status'] == 'cancelled') 
 					{
-						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 7, 'Transaction payment cancelled');
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 7, 'Cointopay Transaction #'.$_REQUEST['TransactionID'].' Set to Canceled for OrderID #'.$_REQUEST['CustomerReferenceNr'], false);
 					
 					$data['text_failed'] = $this->language->get('text_cancel');
 					$data['footer'] = $this->load->controller('common/footer');
@@ -457,7 +457,6 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					}
 					elseif ($_REQUEST['status'] == 'waiting') 
 					{
-						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 15, 'Transaction payment waiting');
 					
 					$data['text_failed'] = $this->language->get('text_waiting');
 					$data['footer'] = $this->load->controller('common/footer');
@@ -474,7 +473,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 					}
 					else
 					{
-						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 7, 'Transaction payment cancelled');
+						$this->model_checkout_order->addOrderHistory($_REQUEST['CustomerReferenceNr'], 7,'Cointopay Transaction #'.$_REQUEST['TransactionID'].' Set to Canceled for OrderID #'.$_REQUEST['CustomerReferenceNr'], false);
 					
 					$data['text_failed'] = $this->language->get('text_cancel');
 					$data['footer'] = $this->load->controller('common/footer');
