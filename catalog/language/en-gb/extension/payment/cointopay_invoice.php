@@ -19,3 +19,6 @@ $_['text_cancel'] = 'Sorry, your payment has cancelled';
 $_['text_waiting'] = 'Sorry, your payment is in waiting';
 $_['text_notenough'] = 'Payment not enough for order #';
 $_['text_invoice_link'] = '. Please contact support ';
+$_['text_ctptag'] = 'Memo/Tag:';
+$_['text_crypto_link'] = 'CRYPTO LINK';
+$_['text_coinadres_link'] = 'CRYPTO ADDRESS';

@@ -109,6 +109,11 @@ class ControllerExtensionPaymentCoinToPay extends Controller
 				$data1['ConfirmCode'] = $php_arr->Security;
 				$data1['inputCurrency'] = $php_arr->inputCurrency;
 				$data1['CalExpiryTime'] = date("m/d/Y h:i:s T",strtotime($php_arr->ExpiryTime));
+				if (property_exists($php_arr, 'Tag')) {
+					if (!empty($php_arr->Tag)) {
+						$data1['CtpTag'] = $php_arr->Tag; 
+					}
+				}
 				$data1['OrderID'] = $this->session->data['order_id'];
 				$data1['CustomerReferenceNr'] = $php_arr->CustomerReferenceNr;
 				$data1['status'] = $php_arr->Status;
@@ -121,6 +126,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller
                 $data1['text_expiry'] = $this->language->get('text_expiry');
                 $data1['text_pay_with_other'] = $this->language->get('text_pay_with_other');
                 $data1['text_clickhere'] = $this->language->get('text_clickhere');
+				
             }
             else
             {

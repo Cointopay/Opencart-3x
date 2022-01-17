@@ -176,7 +176,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller {
 
 		$data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
 		
-		if (null !== $this->config->get('payment_cointopay_merchantID')) {
+		/*if (null !== $this->config->get('payment_cointopay_merchantID')) {
             $currencyOutput = $this->getInputCurrencyList($this->config->get('payment_cointopay_merchantID'));
 			if (in_array($this->config->get('config_currency'), $currencyOutput['currency'])) {
 				$data['error_invalid_currency'] = '';
@@ -185,7 +185,7 @@ class ControllerExtensionPaymentCoinToPay extends Controller {
 				
 				$data['error_invalid_currency'] = 'Your Store currency '.$this->config->get('config_currency').' not supported. Please contact <a href="mailto:support@cointopay.com">support@cointopay.com</a> to resolve this issue.';
 			}
-		}
+		}*/
         
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');

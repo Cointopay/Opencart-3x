@@ -42,6 +42,16 @@
                             </tr>
                         </tbody>
                     </table>
+					{% if (CtpTag is defined) %} 
+					<table class="form">
+                        <tbody>
+                            <tr style="height: 50px;">
+                                <td style="width: 200px;">{{ text_ctptag }}</td>
+                                <td>{{ CtpTag }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+					{% endif %} 
                     <table class="form">
                         <tbody>
                             <tr style="height: 50px;">
@@ -62,7 +72,9 @@
                 <div style="width: 50%; float:left;" class="right">
                     <div style="text-align: center;">
                     <img src="{{ constant('HTTP_SERVER') }}image/cointopay.gif" style="margin: auto; display: table;margin-bottom: 20px;" />
-                       <img src="{{ QRCodeURL }}" />
+                       <img src="{{ QRCodeURL }}" class="ctpQRcode" />
+					   <img src="https://chart.googleapis.com/chart?chs=300&cht=qr&chl={{ coinAddress }}" class="ctpCoinAdress" style="display:none;" />
+					   <button type="button" class="btn btn-block btn-success btnCrypto" style="width:auto;margin:auto;">{{ text_crypto_link }}</button>
                     </div>
                 </div>
             </div>
@@ -116,6 +128,20 @@ jQuery(function($){
                                     }
                                 }
                             }, 1000);
+							if ($('.btnCrypto').length) {
+								$('.btnCrypto').click(function(){
+									if ($(this).text() == "{{ text_crypto_link }}") {
+										$(this).text("{{ text_coinadres_link }}");
+										$('.ctpQRcode').hide();
+										$('.ctpCoinAdress').show();
+									} else if ($(this).text() == "{{ text_coinadres_link }}") {
+										$(this).text("{{ text_crypto_link }}");
+										$('.ctpCoinAdress').hide();
+										$('.ctpQRcode').show();
+									}
+									
+								});
+							}
 });
 setInterval(function() {
                                     var CustomerReferenceNr = {{ CustomerReferenceNr }};
