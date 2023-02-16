@@ -154,6 +154,24 @@ class ControllerExtensionPaymentCoinToPay extends Controller {
 		} else {
 			$data['cointopay_callback_failed_order_status_id'] = $this->config->get('payment_cointopay_callback_failed_order_status_id');
 		}
+		
+		if (isset($this->request->post['payment_cointopay_callback_expired_order_status_id'])) {
+			$data['cointopay_callback_expired_order_status_id'] = $this->request->post['payment_cointopay_callback_expired_order_status_id'];
+		} else {
+			$data['cointopay_callback_expired_order_status_id'] = $this->config->get('payment_cointopay_callback_expired_order_status_id');
+		}
+		
+		if (isset($this->request->post['payment_cointopay_callback_notenough_order_status_id'])) {
+			$data['cointopay_callback_notenough_order_status_id'] = $this->request->post['payment_cointopay_callback_notenough_order_status_id'];
+		} else {
+			$data['cointopay_callback_notenough_order_status_id'] = $this->config->get('payment_cointopay_callback_notenough_order_status_id');
+		}
+		
+		if (isset($this->request->post['payment_cointopay_callback_cancel_order_status_id'])) {
+			$data['cointopay_callback_cancel_order_status_id'] = $this->request->post['payment_cointopay_callback_cancel_order_status_id'];
+		} else {
+			$data['cointopay_callback_cancel_order_status_id'] = $this->config->get('payment_cointopay_callback_cancel_order_status_id');
+		}
                 
         if (isset($this->request->post['payment_cointopay_merchantID'])) {
 			$data['cointopay_merchantID'] = $this->request->post['payment_cointopay_merchantID'];

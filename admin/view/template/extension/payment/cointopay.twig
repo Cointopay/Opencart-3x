@@ -129,6 +129,48 @@
                             </select>
                         </div>
                     </div>
+					 <div class="form-group">
+                        <label class="col-sm-2 control-label" for="entry-callback-expired-order-status">{{ entry_callback_expired_order_status }}</label>
+                        <div class="col-sm-10">
+                            <select name="payment_cointopay_callback_expired_order_status_id" id="cointopay_callback_expired_order_status_id" class="form-control">
+                                {% for order_status in order_statuses %}
+                                    {% if order_status.order_status_id  ==  cointopay_callback_expired_order_status_id %}
+                                        <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                   {% else %}
+                                        <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+  {% endif %}{% endfor %}
+
+                            </select>
+                        </div>
+                    </div>
+					 <div class="form-group">
+                        <label class="col-sm-2 control-label" for="entry-callback-notenough-order-status">{{ entry_callback_notenough_order_status }}</label>
+                        <div class="col-sm-10">
+                            <select name="payment_cointopay_callback_notenough_order_status_id" id="cointopay_callback_notenough_order_status_id" class="form-control">
+                                {% for order_status in order_statuses %}
+                                    {% if order_status.order_status_id  ==  cointopay_callback_notenough_order_status_id %}
+                                        <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                   {% else %}
+                                        <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+  {% endif %}{% endfor %}
+
+                            </select>
+                        </div>
+                    </div>
+					 <div class="form-group">
+                        <label class="col-sm-2 control-label" for="entry-callback-cancel-order-status">{{ entry_callback_cancel_order_status }}</label>
+                        <div class="col-sm-10">
+                            <select name="payment_cointopay_callback_cancel_order_status_id" id="cointopay_callback_cancel_order_status_id" class="form-control">
+                                {% for order_status in order_statuses %}
+                                    {% if order_status.order_status_id  ==  cointopay_callback_cancel_order_status_id %}
+                                        <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                   {% else %}
+                                        <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+  {% endif %}{% endfor %}
+
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
                         <div class="col-sm-10">

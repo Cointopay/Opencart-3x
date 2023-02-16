@@ -18,6 +18,9 @@ $_['entry_display_name']                                 = 'Display Name';
 $_['entry_order_status']                                 = 'Order Status After Create Invoice';
 $_['entry_callback_success_order_status']                        = 'Order Status After Callback success From Cointopay';
 $_['entry_callback_failed_order_status']                        = 'Order Status After Callback Failed From Cointopay';
+$_['entry_callback_expired_order_status']                        = 'Order Status After Callback Expired From Cointopay';
+$_['entry_callback_notenough_order_status']                        = 'Order Status After Callback Underpaid From Cointopay';
+$_['entry_callback_cancel_order_status']                        = 'Order Status when Order Cancel';
 $_['entry_merchantID']                                   = 'Merchant ID';
 $_['entry_sort_order']   = 'Sort Order';
 
