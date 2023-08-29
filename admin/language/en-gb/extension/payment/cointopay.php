@@ -7,6 +7,7 @@ $_['text_payment']					 = 'Payment';
 $_['text_success']					 = 'Success: You have modified Cointopay account details!';
 $_['text_enabled']                                       = 'Enabled';
 $_['text_disabled']                                      = 'Disabled';
+$_['text_cointopay'] = '<a target="_BLANK" href="https://cointopay.com/"><img style="width: 100px;" src="view/image/payment/cointopay.png" alt="Cointopay" title="Cointopay" style="border: 1px solid #EEEEEE;" /></a>';
 
 
 // Entry
