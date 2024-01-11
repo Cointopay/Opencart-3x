@@ -155,6 +155,11 @@ class ControllerExtensionPaymentCoinToPay extends Controller
             }
             $data1['footer'] = $this->load->controller('common/footer');
             $data1['header'] = $this->load->controller('common/header');
+	    $data1['file_exists'] = false;
+	    if (isset($data1['coinAddress'])) {
+		$filename = "https://quickchart.io/qr?size=300&text=".$data1['coinAddress'];
+		$data1['file_exists'] = @fopen($filename, 'r');
+	    }
             if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/cointopay_invoice')) 
             {
                 $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/extension/payment/cointopay_invoice', $data1));
