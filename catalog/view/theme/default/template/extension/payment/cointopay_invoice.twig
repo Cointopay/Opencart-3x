@@ -65,8 +65,10 @@
                     <div style="text-align: center;">
                     <img src="{{ constant('HTTP_SERVER') }}image/cointopay.gif" style="margin: auto; display: table;margin-bottom: 20px;" />
                        <img src="{{ QRCodeURL }}" class="ctpQRcode" />
-					   <img src="https://chart.googleapis.com/chart?chs=300&cht=qr&chl={{ coinAddress }}" class="ctpCoinAdress" style="display:none;" />
-					   <button type="button" class="btn btn-block btn-success btnCrypto" style="width:auto;margin:auto;">{{ text_crypto_link }}</button>
+{% if file_exists("https://quickchart.io/qr?size=300&text={{ coinAddress }}") %}
+					   <img src="https://quickchart.io/qr?size=300&text={{ coinAddress }}" class="ctpCoinAdress" style="display:none;" />
+					  {% endif %}   
+<button type="button" class="btn btn-block btn-success btnCrypto" style="width:auto;margin:auto;">{{ text_crypto_link }}</button>
                     </div>
                 </div>
             </div>
